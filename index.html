@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+	<script>
+		(function($) {
+			
+			// Unscrambler
+
+			function Unscramble() {
+				this.hiddenStr = $('span[hidden]')
+			}
+
+			Unscramble.prototype.getMessage = function() {
+				var messageArr = [];
+				var message;
+				for(var i = 0; i < this.hiddenStr.length; i++) {
+					messageArr.push(this.hiddenStr[i].innerHTML)
+				}
+				message = messageArr.join('');
+				return message;
+			}
+
+			Unscramble.prototype.displayMessage = function() {
+				var displayMsg = this.getMessage();
+				$('body').html(displayMsg);
+			}
+
+			// Scrambler
+
+			// Create a var data that will contain all the letters, numbers, and characters.
+			var data = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=~`{}|[]\:";<>?,./'.split('');
+
+			// Generate a random number between 7500-9000. This will be the length of the characters.
+			function getRandomInt(min, max) {
+			    return Math.floor(Math.random() * (max - min + 1)) + min;
+			}
+
+			function GenerateScrambler(str) {
+				this.str = str;
+				this.length = getRandomInt(7500, 9000);
+				this.hiddenMsgArray = [];
+				this.scrambledStrArray = [];
+			}
+
+			// Split the string input and place each character in a span hidden tag.
+			GenerateScrambler.prototype.splitStringHidden = function() {
+				var splitStr = this.str.split('');
+				for(var i = 0; i < splitStr.length; i++) {
+					this.hiddenMsgArray.push("<span hidden>" + splitStr[i] + "</span>")
+				}
+				return this.hiddenMsgArray;
+			}
+
+			// Get a random character/symbol and put it into a span tag.
+			GenerateScrambler.prototype.getRandomChar = function() {
+				var randomNum = getRandomInt(0, (data.length-1));
+				var randomChar = "<span>" + data[randomNum] + "</span>";
+				return randomChar;
+			}
+
+			// While the scrambledStrArray is less than the length
+			// Check if hiddenMsgArray is empty. If not:
+			// Shift an element from the hiddenMsgArray and push into scrambledStrArray
+			// Then/Else generate a random number and call getRandomChar() that many times and push into scrambledStrArray
+
+			GenerateScrambler.prototype.buildScramble = function() {
+				this.splitStringHidden();
+				while(this.scrambledStrArray.length <= this.length) {
+					if(this.hiddenMsgArray.length !== 0) {
+						var msgChar = this.hiddenMsgArray.shift();
+						this.scrambledStrArray.push(msgChar);
+					}
+					var randomNum = getRandomInt(1,50);
+					for(var i = 0; i < randomNum; i++) {
+						var randomChar = this.getRandomChar();
+						this.scrambledStrArray.push(randomChar);
+						if(this.scrambledStrArray.length % 100 === 0) {
+							this.scrambledStrArray.push("<br />");
+						}
+					}
+				}
+				var scrambledStr = this.scrambledStrArray.join('')
+				this.addToBody(scrambledStr)
+			}
+
+			// LAST STEP: Append to the body the long encrypted string.
+			GenerateScrambler.prototype.addToBody = function(encodedMsg) {
+				$( "body" ).append( "<span>" + encodedMsg + "</span>" );
+			}
+
+			$(document).ready(function(){
+				scramble = new GenerateScrambler("Thanks for a really fun coding challenge!");
+				scramble.buildScramble();
+				$('#unscramble-button').click(function() {
+					unscramble = new Unscramble();
+					unscramble.displayMessage();
+				})
+			});
+		})(jQuery);
+		
+		</script>
+		<style>
+			body {
+				font-family: monospace;
+			}
+		</style>
+	</head>
+	<body>
+		<p><button id="unscramble-button">Unscramble</button></p>
+	</body>
+	</html>
