@@ -92,10 +92,10 @@
 			$(document).ready(function(){
 				scramble = new GenerateScrambler("Thanks for a really fun coding challenge!");
 				scramble.buildScramble();
-				$('#unscramble-button').click(function() {
-					unscramble = new Unscramble();
-					unscramble.displayMessage();
-				})
+				// $('#unscramble-button').click(function() {
+				// 	unscramble = new Unscramble();
+				// 	unscramble.displayMessage();
+				// })
 			});
 		})(jQuery);
 		
@@ -107,6 +107,5 @@
 		</style>
 	</head>
 	<body>
-		<p><button id="unscramble-button">Unscramble</button></p>
 	</body>
 	</html>
